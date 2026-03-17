@@ -36,3 +36,11 @@ cases:
       echo "Before subshell"
       (exec cat <<<"Hello from exec in subshell")
       echo "After subshell"
+
+  - name: "Nested subshells"
+    stdin: |
+      ( ( echo hi ) )
+
+  - name: "Deeply nested subshells"
+    stdin: |
+      ( ( ( ( echo hi ) ) ) )

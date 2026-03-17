@@ -220,3 +220,29 @@ cases:
 
       $($(:))
       echo "exit code: $?"
+
+  - name: "Command substitution with nested subshells"
+    stdin: |
+      x=$( ( ( echo hi ) ) )
+      echo "$x"
+
+  - name: "Command substitution with deeply nested subshells"
+    stdin: |
+      x=$( ( ( ( ( echo hi ) ) ) ) )
+      echo "$x"
+
+  - name: "Command substitution with nested subshells pipes and fd redirections"
+    stdin: |
+      precheck() { echo "output"; echo "warn msg" >&3; echo "err msg" >&2; echo "xs=0" >&9; }
+      error() { echo "ERROR: $1"; }
+      warn() { echo "WARN: $1"; }
+      info() { echo "INFO: $1"; }
+      {
+        env=$( ( ( ( (
+          set +e; (set -e; precheck) >&8 8>&-; echo "xs=$?" >&9
+          ) 2>&1 | while IFS= read -r line; do error "$line"; done >&2
+          ) 3>&1 | while IFS= read -r line; do warn "$line"; done >&2
+          ) 4>&1 | while IFS= read -r line; do info "$line"; done >&8
+        ) 9>&1 )
+        echo "env: $env"
+      } 8>&1
