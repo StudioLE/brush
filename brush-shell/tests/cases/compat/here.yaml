@@ -281,3 +281,17 @@ cases:
       EOF
       )
       echo $var
+
+  - name: "Here doc with unpaired double quote in command substitution"
+    stdin: |
+      echo "$(cat <<'EOF'
+      she said "hello
+      EOF
+      )"
+
+  - name: "Here doc with all three unmatched delimiters in command substitution"
+    stdin: |
+      echo "$(cat <<'EOF'
+      `hello "world it's
+      EOF
+      )"

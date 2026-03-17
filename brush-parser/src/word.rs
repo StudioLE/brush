@@ -1265,6 +1265,12 @@ mod tests {
     }
 
     #[test]
+    fn parse_command_sub_with_unbalanced_double_quote() -> Result<()> {
+        assert_ron_snapshot!(test_parse("\"$(cat <<'EOF'\nshe said \"hello\nEOF\n)\"")?);
+        Ok(())
+    }
+
+    #[test]
     fn parse_command_sub_with_unbalanced_single_quote() -> Result<()> {
         assert_ron_snapshot!(test_parse("\"$(cat <<'EOF'\nit's here\nEOF\n)\"")?);
         Ok(())
